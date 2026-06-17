@@ -66,7 +66,7 @@ c_twilight = ['#363b74', '#673888', '#ef4f91', '#c79dd7', '#4d1b7b'] # https://w
 c_palette = ["#780000","#c1121f","#fdf0d5","#003049","#669bbc"]
 
 
-def plot_2D_map(df, filename):
+def plot_2D_map(df, filename, title):
     plt.imshow(
         df.values.T,
         origin="lower",
@@ -82,6 +82,10 @@ def plot_2D_map(df, filename):
 
     plt.xlabel("x (nm)")
     plt.ylabel("y (nm)")
+    plt.title(title)
+    plt.colorbar()
     plt.tight_layout()
+
     plt.savefig(f"{filename}.png")
+
     plt.show()
