@@ -5,11 +5,18 @@ from plotter import *
 def main():
     dir = '/home/alina/Documents/STO-self_focusing/data'
     num = 1
+    
+    df = load_2D_map(f"{dir}/potential_nocharge_{num}.dat")
+    plot_2D_map(df, f"{dir}/plots/potential_nocharge_{num}", f"potential_no_charge")
+
+    df = load_2D_map(f"{dir}/potential_plus_z_{num}.dat")
+    plot_2D_map(df, f"{dir}/plots/potential_plus_z_{num}", f"potential_plus_z")
+
+    df = load_2D_map(f"{dir}/potential_eps0{num}.dat")
+    plot_2D_map(df, f"{dir}/plots/potential_eps0{num}", f"potential_eps0")
+
     df = load_2D_map(f"{dir}/density.dat")
     plot_2D_map(df, f"{dir}/plots/density_before", f"density_before")
-
-    df = load_2D_map(f"{dir}/potential_{num}.dat")
-    plot_2D_map(df, f"{dir}/plots/potential_{num}", f"potential_{num}")
 
     df = load_2D_map(f"{dir}/potential_final_{num}.dat")
     plot_2D_map(df, f"{dir}/plots/potential_final_{num}", f"potential_final_{num}")
