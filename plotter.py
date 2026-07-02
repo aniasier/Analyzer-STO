@@ -108,7 +108,7 @@ def crossection_in_iters(data, max_iter, filename):
     fig, ax = plt.subplots(figsize=(6.5, 4), squeeze=False)
     ax = ax[0, 0]
 
-    colors = cm_seismic(np.linspace(0, 1, len(frames)))
+    colors = cm_plasma(np.linspace(0, 1, len(frames)))
     
     x_label = None
     y_label = None
