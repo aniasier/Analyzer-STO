@@ -1,3 +1,6 @@
+import os
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -70,7 +73,7 @@ def plot_2D_map(df, filename, title):
     plt.imshow(
         df.values.T,
         origin="lower",
-        aspect="auto",
+        aspect="equal",
         extent=[
             df.index.min(),
             df.index.max(),
@@ -88,4 +91,68 @@ def plot_2D_map(df, filename, title):
 
     plt.savefig(f"{filename}.png")
 
+    plt.show()
+
+def crossection_in_iters(data, max_iter, filename):
+    if isinstance(data, (str, os.PathLike)):
+        from loader import load_iter_make_list
+        data = load_iter_make_list(data, max_iter)
+
+    if not isinstance(data, (list, tuple)):
+        raise TypeError("data must be a list/tuple of frames or a filepath prefix")
+
+    frames = list(data)[:max_iter]
+    if not frames:
+        return
+
+    fig, ax = plt.subplots(figsize=(6.5, 4), squeeze=False)
+    ax = ax[0, 0]
+
+    colors = cm_seismic(np.linspace(0, 1, len(frames)))
+    
+    x_label = None
+    y_label = None
+
+    for frame, idx, color in zip(frames, range(len(frames)), colors):
+        if hasattr(frame, "iloc"):
+            x = frame.iloc[:, 0]
+            y = frame.iloc[:, 1]
+            x_label = frame.columns[0]
+            y_label = frame.columns[1]
+        else:
+            x = frame[0]
+            y = frame[1]
+            x_label = "col 1"
+            y_label = "col 2"
+
+        ax.plot(x, y, label=f"iter {idx}", color=color)
+
+        # compute 90% width (z05, z95) like in your example
+        try:
+            z = np.asarray(x)
+            rho = np.asarray(y)
+            cdf = np.cumsum(rho)
+            if cdf.size == 0 or cdf[-1] == 0:
+                width90 = float('nan')
+            else:
+                cdf = cdf / cdf[-1]
+                z05 = z[np.searchsorted(cdf, 0.05)]
+                z95 = z[np.searchsorted(cdf, 0.95)]
+                width90 = z95 - z05
+            print(f"iter {idx}: width90 = {width90}")
+        except Exception as e:
+            print(f"iter {idx}: width90 computation failed: {e}")
+
+    ax.set_xlabel(x_label or "x")
+    ax.set_ylabel(y_label or "y")
+    ax.legend()
+    ax.grid(alpha=0.3)
+
+    fig.tight_layout()
+    
+    output_dir = os.path.dirname(filename)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+    
+    fig.savefig(f"{filename}.png", dpi=300)
     plt.show()
