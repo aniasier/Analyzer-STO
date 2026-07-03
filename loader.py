@@ -51,7 +51,11 @@ def load_file(filepath):
         sep=r"\s+",
         comment="#",
         header=None,
-        names=["z", "fun"]
+        names=["z", "fun"],
+        converters={
+            "z": fix_fortran_number,
+            "fun": fix_fortran_number,
+        }
     )
 
 def load_iter_make_list(filepath, max_iter):
