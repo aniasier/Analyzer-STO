@@ -28,3 +28,25 @@ def potential_check(dir, max_iter):
 
     df = load_2D_map(f"{dir}/potential_final_{max_iter}.dat")
     plot_2D_map(df, f"{dir}/plots/potential_final_{max_iter}", f"potential_final_{max_iter}")
+
+def check_final(dir):
+    file_list = []
+    file_list.append(load_file(f"{dir}/density_init_crossection.dat"))
+    file_list.append(load_file(f"{dir}/density_final_crossection.dat"))
+    crossection_in_iters(file_list, 2, f"{dir}/plots/crosssection_z")
+
+    file_list = []
+    file_list.append(load_file(f"{dir}/density_init_crossection_x.dat"))
+    file_list.append(load_file(f"{dir}/density_final_crossection_x.dat"))
+    crossection_in_iters(file_list, 2, f"{dir}/plots/crosssection_x")
+
+    file_list = []
+    file_list.append(load_file(f"{dir}/density_init_crossection_y.dat"))
+    file_list.append(load_file(f"{dir}/density_final_crossection_y.dat"))
+    crossection_in_iters(file_list, 2, f"{dir}/plots/crosssection_y")
+
+    df = load_2D_map(f"{dir}/density_init.dat")
+    plot_2D_map(df, f"{dir}/plots/density_before", f"density_before")
+
+    df = load_2D_map(f"{dir}/density_final.dat")
+    plot_2D_map(df, f"{dir}/plots/density_after",f"density_after" )
