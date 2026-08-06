@@ -156,3 +156,29 @@ def crossection_in_iters(data, max_iter, filename):
     
     fig.savefig(f"{filename}.png", dpi=300)
     plt.show()
+
+def plot_epsilon(file_list, nx_list):
+    if len(file_list) != len(nx_list):
+        raise ValueError("file_list and nx_list must have the same length")
+
+    if not file_list:
+        return
+
+    for data, label in zip(file_list, nx_list):
+        if isinstance(data, dict):
+            z = data["z"]
+            fun = data["fun"]
+        elif hasattr(data, "columns") and "z" in data.columns and "fun" in data.columns:
+            z = data["z"]
+            fun = data["fun"]
+        else:
+            raise TypeError("each element of file_list must contain 'z' and 'fun' values")
+
+        plt.plot(z, fun, label=str(label))
+
+    plt.xlabel("z")
+    plt.ylabel("fun")
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+

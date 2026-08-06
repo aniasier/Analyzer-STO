@@ -138,4 +138,9 @@ def init_vs_final_size_z(dir, var_tab, var_name):
     output_path = os.path.join(plots_dir, f"size_comparison_{var_name}_z.png")
     plt.savefig(output_path, dpi=300)
     plt.show()
-    
+
+def check_epsilon(dir, nx_list):
+    file_list = []
+    for nx in nx_list:
+        file_list.append(load_file(f"{dir}/{nx}/epsilon_trapped.dat"))
+    plot_epsilon(file_list, nx_list)
