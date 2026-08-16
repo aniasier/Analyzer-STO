@@ -94,14 +94,27 @@ def plot_2D_map(df, filename, title):
     plt.show()
 
 def crossection_in_iters(data, max_iter, filename):
+    init_loaded = False
     if isinstance(data, (str, os.PathLike)):
-        from loader import load_iter_make_list
-        data = load_iter_make_list(data, max_iter)
+        from loader import load_iter_make_list, load_file
+        # load iterations
+        iter_frames = load_iter_make_list(data, max_iter)
 
-    if not isinstance(data, (list, tuple)):
-        raise TypeError("data must be a list/tuple of frames or a filepath prefix")
+        # try to also load the initial state file named '<prefix>_init.dat'
+        init_path = f"{filename}_init.dat"
+        frames = list(iter_frames)
+        if os.path.exists(init_path):
+            try:
+                init_frame = load_file(init_path)
+                frames.insert(0, init_frame)
+                init_loaded = True
+            except Exception as e:
+                print(f"failed to load init file {init_path}: {e}")
+    else:
+        if not isinstance(data, (list, tuple)):
+            raise TypeError("data must be a list/tuple of frames or a filepath prefix")
 
-    frames = list(data)[:max_iter]
+        frames = list(data)[:max_iter]
     if not frames:
         return
 
@@ -113,7 +126,7 @@ def crossection_in_iters(data, max_iter, filename):
     x_label = None
     y_label = None
 
-    for frame, idx, color in zip(frames, range(len(frames)), colors):
+    for i, (frame, color) in enumerate(zip(frames, colors)):
         if hasattr(frame, "iloc"):
             x = frame.iloc[:, 0]
             y = frame.iloc[:, 1]
@@ -125,7 +138,12 @@ def crossection_in_iters(data, max_iter, filename):
             x_label = "col 1"
             y_label = "col 2"
 
-        ax.plot(x, y, label=f"iter {idx}", color=color)
+        if init_loaded:
+            label = "init" if i == 0 else f"iter {i}"
+        else:
+            label = f"iter {i}"
+
+        ax.plot(x, y, label=label, color=color)
 
         # compute 90% width (z05, z95) like in your example
         try:
@@ -139,9 +157,9 @@ def crossection_in_iters(data, max_iter, filename):
                 z05 = z[np.searchsorted(cdf, 0.05)]
                 z95 = z[np.searchsorted(cdf, 0.95)]
                 width90 = z95 - z05
-            print(f"iter {idx}: width90 = {width90}")
+            print(f"{label}: width90 = {width90}")
         except Exception as e:
-            print(f"iter {idx}: width90 computation failed: {e}")
+            print(f"{label}: width90 computation failed: {e}")
 
     ax.set_xlabel(x_label or "x")
     ax.set_ylabel(y_label or "y")
