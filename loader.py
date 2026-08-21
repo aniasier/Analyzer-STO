@@ -63,3 +63,23 @@ def load_iter_make_list(filepath, max_iter):
     for i in range(1,max_iter+1):
         file_list.append(load_file(f"{filepath}_{i}.dat"))
     return file_list
+
+def load_iter_make_list_with_init(filepath, max_iter):
+    file_list = []
+    file_list.append(load_file(f"{filepath}_init.dat"))
+    for i in range(1,max_iter+1):
+        file_list.append(load_file(f"{filepath}_{i}.dat"))
+    return file_list
+
+def load_2D_iter_make_list(filepath, max_iter):
+    file_list = []
+    for i in range(1,max_iter+1):
+        file_list.append(load_2D_map(f"{filepath}_{i}.dat"))
+    return file_list
+
+def load_2D_iter_make_list_with_init(filepath, max_iter):
+    file_list = []
+    file_list.append(load_2D_map(f"{filepath}_init.dat"))
+    for i in range(1,max_iter+1):
+        file_list.append(load_2D_map(f"{filepath}_{i}.dat"))
+    return file_list

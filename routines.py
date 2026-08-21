@@ -144,3 +144,86 @@ def check_epsilon(dir, nx_list):
     for nx in nx_list:
         file_list.append(load_file(f"{dir}/{nx}/epsilon_trapped.dat"))
     plot_epsilon(file_list, nx_list)
+
+def full_checking(dir, max_iter):
+    # initial potential and density
+    df = load_2D_map(f"{dir}/density_xy_init.dat")
+    plot_2D_map(df, f"{dir}/plots/density_xy_init", f"init densitity (xy)")
+
+    df = load_2D_map(f"{dir}/density_xz_init.dat")
+    plot_2D_map(df, f"{dir}/plots/density_xz_init", f"init densitity (xz)")
+
+    df = load_2D_map(f"{dir}/density_zy_init.dat")
+    plot_2D_map(df, f"{dir}/plots/density_zy_init", f"init densitity (zy)")
+
+    df = load_2D_map(f"{dir}/density_xy_init_slice.dat")
+    plot_2D_map(df, f"{dir}/plots/density_xy_init_slice", f"init densitity (xy) SLICE")
+
+    df = load_2D_map(f"{dir}/density_xz_init_slice.dat")
+    plot_2D_map(df, f"{dir}/plots/density_xz_init_slice", f"init densitity (xz) SLICE")
+
+    df = load_2D_map(f"{dir}/density_zy_init_slice.dat")
+    plot_2D_map(df, f"{dir}/plots/density_zy_init_slice", f"init densitity (zy) SLICE")
+
+    file_list = load_iter_make_list(f"{dir}/density_crossection", max_iter)
+    crossection_in_iters(file_list, max_iter, f"{dir}/plots/density_crosssection_z")
+
+    file_list = load_iter_make_list(f"{dir}/density_crossection_x", max_iter)
+    crossection_in_iters(file_list, max_iter, f"{dir}/plots/density_crosssection_x")
+
+    file_list = load_iter_make_list(f"{dir}/density_crossection_y", max_iter)
+    crossection_in_iters(file_list, max_iter, f"{dir}/plots/density_crosssection_y")
+
+    file_list = load_iter_make_list(f"{dir}/potential_crossection", max_iter)
+    crossection_in_iters(file_list, max_iter, f"{dir}/plots/potential_crosssection_z")
+
+    file_list = load_iter_make_list(f"{dir}/potential_crossection_x", max_iter)
+    crossection_in_iters(file_list, max_iter, f"{dir}/plots/potential_crosssection_x")
+
+    file_list = load_iter_make_list(f"{dir}/potential_crossection_y", max_iter)
+    crossection_in_iters(file_list, max_iter, f"{dir}/plots/potential_crosssection_y")
+    
+    file_list = load_2D_iter_make_list(f"{dir}/density_xy", max_iter)
+    plot_2D_map_gif(file_list, f"{dir}/plots/density_xy_in_iters", fps=5)
+
+    file_list = load_2D_iter_make_list(f"{dir}/density_xz", max_iter)
+    plot_2D_map_gif(file_list, f"{dir}/plots/density_xz_in_iters", fps=5)
+
+    file_list = load_2D_iter_make_list(f"{dir}/density_zy", max_iter)
+    plot_2D_map_gif(file_list, f"{dir}/plots/density_zy_in_iters", fps=5)
+
+    file_list = load_2D_iter_make_list(f"{dir}/potential_xy", max_iter)
+    plot_2D_map_gif(file_list, f"{dir}/plots/potential_xy_in_iters", fps=5)
+
+    file_list = load_2D_iter_make_list(f"{dir}/potential_xz", max_iter)
+    plot_2D_map_gif(file_list, f"{dir}/plots/potential_xz_in_iters", fps=5)
+
+    file_list = load_2D_iter_make_list(f"{dir}/potential_zy", max_iter)
+    plot_2D_map_gif(file_list, f"{dir}/plots/potential_zy_in_iters", fps=5)
+
+    # epsilon etc
+    file_list = load_iter_make_list_with_init(f"{dir}/epsilon_trapped", max_iter-1)
+    plot_in_iter(file_list, max_iter, parameter="epsilon")
+
+    file_list = load_iter_make_list_with_init(f"{dir}/charge_trapped", max_iter-1)
+    plot_in_iter(file_list, max_iter, parameter="charge")
+
+    # file_list = load_iter_make_list_with_init(f"{dir}/charge_total", max_iter-1)
+    # plot_in_iter(file_list, max_iter, parameter="charge")
+
+    # file_list = load_iter_make_list_with_init(f"{dir}/density_fine", max_iter-1)
+    # plot_in_iter(file_list, max_iter, parameter="density")
+
+    file_list = load_iter_make_list_with_init(f"{dir}/potential_trapped", max_iter-1)
+    plot_in_iter(file_list, max_iter, parameter="potential")
+
+    file_list = load_iter_make_list_with_init(f"{dir}/electric_field_trapped", max_iter-1)
+    plot_in_iter(file_list, max_iter, parameter="electric_field")
+    
+
+
+
+
+
+
+

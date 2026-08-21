@@ -1,13 +1,15 @@
 import os
 import math
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
 from matplotlib import rcParams
 from matplotlib.cm import get_cmap
+from matplotlib.animation import PillowWriter
 import matplotlib.gridspec as gridspec
-
+import matplotlib.animation
 ## Font
 rcParams['font.family'] = 'serif'
 rcParams['font.serif'] = ['Times New Roman', 'Times', 'DejaVu Serif']
@@ -92,6 +94,44 @@ def plot_2D_map(df, filename, title):
     plt.savefig(f"{filename}.png")
 
     plt.show()
+
+
+def plot_2D_map_gif(file_list, output_file, fps=5):
+    from matplotlib.animation import FuncAnimation
+
+    fig, ax = plt.subplots()
+
+    df0 = file_list[0]
+    img = ax.imshow(
+        df0.values.T,
+        origin="lower",
+        aspect="equal",
+        extent=[
+            df0.index.min(),
+            df0.index.max(),
+            df0.columns.min(),
+            df0.columns.max()
+        ],
+        cmap="inferno"
+    )
+
+    ax.set_xlabel("x (nm)")
+    ax.set_ylabel("y (nm)")
+    title = ax.set_title("iter 1")
+    fig.colorbar(img, ax=ax)
+    fig.tight_layout()
+
+    def update(i):
+        df = file_list[i]
+        img.set_array(df.values.T)
+        title.set_text(f"iter {i + 1}")
+        return img, title
+
+    anim = FuncAnimation(fig, update, frames=len(file_list), interval=1000 / fps)
+    anim.save(f"{output_file}.gif", writer="pillow", fps=fps)
+    plt.close(fig)
+
+    return f"{output_file}.gif"
 
 def crossection_in_iters(data, max_iter, filename):
     init_loaded = False
@@ -194,9 +234,59 @@ def plot_epsilon(file_list, nx_list):
 
         plt.plot(z, fun, label=str(label))
 
-    plt.xlabel("z")
-    plt.ylabel("fun")
-    plt.legend()
+    plt.xlabel("z (nm)")
+    plt.ylabel("$\\epsilon$")
+    # plt.legend()
     plt.tight_layout()
     plt.show()
+
+
+def plot_in_iter(file_list, max_iter, parameter, cmap_name="inferno"):
+    if not file_list:
+        return
+
+    if max_iter is None:
+        max_iter = len(file_list)
+
+    if len(file_list) != max_iter:
+        raise ValueError("file_list and max_iter must have the same length")
+
+    cmap = plt.get_cmap(cmap_name, len(file_list))
+
+    for i, data in enumerate(file_list):
+        if isinstance(data, dict):
+            z = data["z"]
+            fun = data["fun"]
+        elif hasattr(data, "columns") and "z" in data.columns and "fun" in data.columns:
+            z = data["z"]
+            fun = data["fun"]
+        else:
+            raise TypeError("each element of file_list must contain 'z' and 'fun' values")
+
+        plt.plot(
+            z,
+            fun,
+            color=cmap(i),
+            label=f"iter {i + 1}",
+            lw=1.2,
+            alpha=0.95,
+        )
+    plt.xlabel("z (nm)")
+    if parameter == "epsilon":
+        plt.ylabel("$\\epsilon$")
+    elif parameter == "charge":
+        plt.ylabel("$\\rho$")
+    elif parameter == "potential":
+        plt.ylabel("V (meV)")
+    elif parameter == "density":
+        plt.ylabel("$\psi$^2$")
+    elif parameter == "electric_field":
+        plt.ylabel("$E$ (eV/nm^2)")
+
+    # plt.title("epsilon profile evolution")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(frameon=False)
+    plt.tight_layout()
+    plt.show()
+
 
