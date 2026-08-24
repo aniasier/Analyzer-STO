@@ -14,7 +14,7 @@ def main():
     # folders = [1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000]
     # check_epsilon(dir, folders)
 
-    max_iter = 9
+    max_iter = 1
     # var_tab = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
     # var_name = 'sigma'
     # init_vs_final_size_xy(dir, var_tab, var_name)

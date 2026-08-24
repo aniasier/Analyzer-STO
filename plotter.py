@@ -241,7 +241,7 @@ def plot_epsilon(file_list, nx_list):
     plt.show()
 
 
-def plot_in_iter(file_list, max_iter, parameter, cmap_name="inferno"):
+def plot_in_iter(file_list, max_iter, dir, parameter, cmap_name="inferno"):
     if not file_list:
         return
 
@@ -287,6 +287,7 @@ def plot_in_iter(file_list, max_iter, parameter, cmap_name="inferno"):
     plt.grid(True, linestyle="--", alpha=0.35)
     plt.legend(frameon=False)
     plt.tight_layout()
+    plt.savefig(f"{dir}/plots/{parameter}_in_iters.png", dpi=300)
     plt.show()
 
 

@@ -203,22 +203,22 @@ def full_checking(dir, max_iter):
 
     # epsilon etc
     file_list = load_iter_make_list_with_init(f"{dir}/epsilon_trapped", max_iter-1)
-    plot_in_iter(file_list, max_iter, parameter="epsilon")
+    plot_in_iter(file_list, max_iter, dir, parameter="epsilon")
 
     file_list = load_iter_make_list_with_init(f"{dir}/charge_trapped", max_iter-1)
-    plot_in_iter(file_list, max_iter, parameter="charge")
+    plot_in_iter(file_list, max_iter, dir, parameter="charge")
 
     # file_list = load_iter_make_list_with_init(f"{dir}/charge_total", max_iter-1)
-    # plot_in_iter(file_list, max_iter, parameter="charge")
+    # plot_in_iter(file_list, max_iter, dir , parameter="charge")
 
     # file_list = load_iter_make_list_with_init(f"{dir}/density_fine", max_iter-1)
-    # plot_in_iter(file_list, max_iter, parameter="density")
+    # plot_in_iter(file_list, max_iter, dir", parameter="density")
 
     file_list = load_iter_make_list_with_init(f"{dir}/potential_trapped", max_iter-1)
-    plot_in_iter(file_list, max_iter, parameter="potential")
+    plot_in_iter(file_list, max_iter, dir , parameter="potential")
 
     file_list = load_iter_make_list_with_init(f"{dir}/electric_field_trapped", max_iter-1)
-    plot_in_iter(file_list, max_iter, parameter="electric_field")
+    plot_in_iter(file_list, max_iter, dir, parameter="electric_field")
     
 
 
