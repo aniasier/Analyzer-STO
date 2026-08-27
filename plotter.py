@@ -10,6 +10,8 @@ from matplotlib.cm import get_cmap
 from matplotlib.animation import PillowWriter
 import matplotlib.gridspec as gridspec
 import matplotlib.animation
+
+from loader import load_file
 ## Font
 rcParams['font.family'] = 'serif'
 rcParams['font.serif'] = ['Times New Roman', 'Times', 'DejaVu Serif']
@@ -203,6 +205,87 @@ def crossection_in_iters(data, max_iter, filename):
 
     ax.set_xlabel(x_label or "x")
     ax.set_ylabel(y_label or "y")
+    ax.legend()
+    ax.grid(alpha=0.3)
+
+    fig.tight_layout()
+    
+    output_dir = os.path.dirname(filename)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+    
+    fig.savefig(f"{filename}.png", dpi=300)
+    plt.show()
+
+
+def crossection_in_iters_with_init(data, max_iter, filename, dir):
+    init_path = f"{dir}/density_init_crossection.dat"
+    final_path = f"{dir}/density_final_crossection.dat"
+
+    init_data = load_file(init_path)
+    final_data = load_file(final_path)
+
+    fig, ax = plt.subplots(figsize=(6.5, 4), squeeze=False)
+    ax = ax[0, 0]
+
+    ax.plot(init_data["z"], init_data["fun"], label="Initial", color=c_google[0])
+    ax.plot(final_data["z"], final_data["fun"], label="Final", color=c_google[1])
+
+    ax.set_xlabel("z (nm)")
+    ax.legend()
+    ax.grid(alpha=0.3)
+
+    fig.tight_layout()
+    
+    output_dir = os.path.dirname(filename)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+    
+    fig.savefig(f"{filename}.png", dpi=300)
+    plt.show()
+
+
+def crossection_in_iters_with_init_x(data, max_iter, filename, dir):
+    init_path = f"{dir}/density_init_crossection_x.dat"
+    final_path = f"{dir}/density_final_crossection_x.dat"
+
+    init_data = load_file(init_path)
+    final_data = load_file(final_path)
+
+    fig, ax = plt.subplots(figsize=(6.5, 4), squeeze=False)
+    ax = ax[0, 0]
+
+    ax.plot(init_data["z"], init_data["fun"], label="Initial", color=c_google[0])
+    ax.plot(final_data["z"], final_data["fun"], label="Final", color=c_google[1])
+
+    ax.set_xlabel("x (nm)")
+    ax.legend()
+    ax.grid(alpha=0.3)
+
+    fig.tight_layout()
+    
+    output_dir = os.path.dirname(filename)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+    
+    fig.savefig(f"{filename}.png", dpi=300)
+    plt.show()
+
+
+def crossection_in_iters_with_init_y(data, max_iter, filename, dir):
+    init_path = f"{dir}/density_init_crossection_y.dat"
+    final_path = f"{dir}/density_final_crossection_y.dat"
+
+    init_data = load_file(init_path)
+    final_data = load_file(final_path)
+
+    fig, ax = plt.subplots(figsize=(6.5, 4), squeeze=False)
+    ax = ax[0, 0]
+
+    ax.plot(init_data["z"], init_data["fun"], label="Initial", color=c_google[0])
+    ax.plot(final_data["z"], final_data["fun"], label="Final", color=c_google[1])
+
+    ax.set_xlabel("y (nm)")
     ax.legend()
     ax.grid(alpha=0.3)
 

@@ -33,23 +33,23 @@ def check_final(dir):
     file_list = []
     file_list.append(load_file(f"{dir}/density_init_crossection.dat"))
     file_list.append(load_file(f"{dir}/density_final_crossection.dat"))
-    crossection_in_iters(file_list, 2, f"{dir}/plots/crosssection_z")
+    crossection_in_iters_with_init(file_list, 2, f"{dir}/plots/crosssection_z", dir)
 
     file_list = []
     file_list.append(load_file(f"{dir}/density_init_crossection_x.dat"))
     file_list.append(load_file(f"{dir}/density_final_crossection_x.dat"))
-    crossection_in_iters(file_list, 2, f"{dir}/plots/crosssection_x")
+    crossection_in_iters_with_init_x(file_list, 2, f"{dir}/plots/crosssection_x", dir)
 
     file_list = []
     file_list.append(load_file(f"{dir}/density_init_crossection_y.dat"))
     file_list.append(load_file(f"{dir}/density_final_crossection_y.dat"))
-    crossection_in_iters(file_list, 2, f"{dir}/plots/crosssection_y")
+    crossection_in_iters_with_init_y(file_list, 2, f"{dir}/plots/crosssection_y", dir)
 
     df = load_2D_map(f"{dir}/density_init.dat")
-    plot_2D_map(df, f"{dir}/plots/density_before", f"density_before")
+    plot_2D_map(df, f"{dir}/plots/density_before", "Initial density")
 
     df = load_2D_map(f"{dir}/density_final.dat")
-    plot_2D_map(df, f"{dir}/plots/density_after",f"density_after" )
+    plot_2D_map(df, f"{dir}/plots/density_after", "Final density")
 
 
 def get_size(file):
@@ -129,7 +129,7 @@ def init_vs_final_size_z(dir, var_tab, var_name):
         plt.xlabel('$n_0$ ($10^{13}$ cm$^{-2}$)')
     elif var_name=="sigma":
         plt.xlabel('$\sigma$ (nm)')
-    plt.xlabel('$n_0$ ($10^{13}$ cm$^{-2}$)')
+    # plt.xlabel('$n_0$ ($10^{13}$ cm$^{-2}$)')
     plt.ylabel('size (nm)')
     plt.tight_layout()
 
