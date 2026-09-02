@@ -31,24 +31,24 @@ def potential_check(dir, max_iter):
 
 def check_final(dir):
     file_list = []
-    file_list.append(load_file(f"{dir}/density_init_crossection.dat"))
-    file_list.append(load_file(f"{dir}/density_final_crossection.dat"))
-    crossection_in_iters_with_init(file_list, 2, f"{dir}/plots/crosssection_z", dir)
+    file_list.append(load_file(f"{dir}/density_crossection_init.dat"))
+    file_list.append(load_file(f"{dir}/density_crossection_final.dat"))
+    crossection_init_vs_final(file_list, f"{dir}/plots/crosssection_z")
 
     file_list = []
-    file_list.append(load_file(f"{dir}/density_init_crossection_x.dat"))
-    file_list.append(load_file(f"{dir}/density_final_crossection_x.dat"))
-    crossection_in_iters_with_init_x(file_list, 2, f"{dir}/plots/crosssection_x", dir)
+    file_list.append(load_file(f"{dir}/density_crossection_x_init.dat"))
+    file_list.append(load_file(f"{dir}/density_crossection_x_final.dat"))
+    crossection_init_vs_final(file_list, f"{dir}/plots/crosssection_x")
 
     file_list = []
-    file_list.append(load_file(f"{dir}/density_init_crossection_y.dat"))
-    file_list.append(load_file(f"{dir}/density_final_crossection_y.dat"))
-    crossection_in_iters_with_init_y(file_list, 2, f"{dir}/plots/crosssection_y", dir)
+    file_list.append(load_file(f"{dir}/density_crossection_y_init.dat"))
+    file_list.append(load_file(f"{dir}/density_crossection_y_final.dat"))
+    crossection_init_vs_final(file_list, f"{dir}/plots/crosssection_y")
 
-    df = load_2D_map(f"{dir}/density_init.dat")
+    df = load_2D_map(f"{dir}/density_xy_init.dat")
     plot_2D_map(df, f"{dir}/plots/density_before", "Initial density")
 
-    df = load_2D_map(f"{dir}/density_final.dat")
+    df = load_2D_map(f"{dir}/density_xy_final.dat")
     plot_2D_map(df, f"{dir}/plots/density_after", "Final density")
 
 
@@ -78,14 +78,40 @@ def get_size(file):
     except Exception:
         return float("nan")
 
+def get_variance(file):
+    """Return the variance of a 1D profile from a loaded file or dataframe."""
+    try:
+        if isinstance(file, str):
+            data = load_file(file)
+        else:
+            data = file
+
+        z = np.asarray(data["z"], dtype=float)
+        rho = np.asarray(data["fun"], dtype=float)
+
+        if z.size == 0 or rho.size == 0 or z.size != rho.size:
+            return float("nan")
+
+        total = np.sum(rho)
+        if total == 0:
+            return float("nan")
+
+        mean = np.sum(z * rho) / total
+        variance = np.sum(rho * (z - mean)**2) / total
+
+        return float(np.sqrt(variance))
+
+    except Exception:
+        return float("nan")
+
 def init_vs_final_size_xy(dir, var_tab, var_name):
     size_list_init = []
     size_list_final = []
     for iter in var_tab:
         file_init = load_file(f"{dir}/RUN_{var_name}_{iter}/data/density_init_crossection_x.dat")
-        size_list_init.append(get_size(file_init))
+        size_list_init.append(get_variance(file_init))
         file_final = load_file(f"{dir}/RUN_{var_name}_{iter}/data/density_final_crossection_x.dat")
-        size_list_final.append(get_size(file_final))
+        size_list_final.append(get_variance(file_final))
 
     plt.plot(var_tab, size_list_init, '.-', color='red', lw=0.8, ms=5, label='initial')
     plt.plot(var_tab, size_list_final, '.-', color='blue', lw=0.8, ms=5, label='final')
@@ -146,7 +172,11 @@ def check_epsilon(dir, nx_list):
     plot_epsilon(file_list, nx_list)
 
 def full_checking(dir, max_iter):
+    plots_dir = os.path.join(dir, "plots")
+    os.makedirs(plots_dir, exist_ok=True)
+
     # initial potential and density
+
     df = load_2D_map(f"{dir}/density_xy_init.dat")
     plot_2D_map(df, f"{dir}/plots/density_xy_init", f"init densitity (xy)")
 

@@ -218,6 +218,49 @@ def crossection_in_iters(data, max_iter, filename):
     plt.show()
 
 
+def crossection_init_vs_final(data, filename):
+    if not isinstance(data, (list, tuple)) or len(data) != 2:
+        raise ValueError("data must contain exactly two profiles: initial and final")
+
+    def get_profile(frame):
+        if hasattr(frame, "columns") and {"z", "fun"}.issubset(frame.columns):
+            return frame["z"], frame["fun"], "z", "fun"
+
+        try:
+            return frame[0], frame[1], "x", "y"
+        except (IndexError, KeyError, TypeError):
+            raise TypeError(
+                "each profile must contain 'z' and 'fun' columns or be a two-item sequence"
+            ) from None
+
+    init_x, init_y, x_label, y_label = get_profile(data[0])
+    final_x, final_y, final_x_label, final_y_label = get_profile(data[1])
+    if x_label == "x" and final_x_label != "x":
+        x_label = final_x_label
+    if y_label == "y" and final_y_label != "y":
+        y_label = final_y_label
+
+    fig, ax = plt.subplots(figsize=(6.5, 4), squeeze=False)
+    ax = ax[0, 0]
+
+    ax.plot(init_x, init_y, label="init", color=c_google[0])
+    ax.plot(final_x, final_y, label="final", linestyle='--', color=c_google[1])
+
+    ax.set_xlabel(f"{x_label} (nm)" if x_label == "z" else x_label)
+    ax.set_ylabel(y_label)
+    ax.legend()
+    ax.grid(alpha=0.3)
+
+    fig.tight_layout()
+    
+    output_dir = os.path.dirname(filename)
+    if output_dir and not os.path.exists(output_dir):
+        os.makedirs(output_dir, exist_ok=True)
+    
+    fig.savefig(f"{filename}.png", dpi=300)
+    plt.show()
+
+
 def crossection_in_iters_with_init(data, max_iter, filename, dir):
     init_path = f"{dir}/density_init_crossection.dat"
     final_path = f"{dir}/density_final_crossection.dat"
