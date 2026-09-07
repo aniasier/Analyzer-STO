@@ -113,8 +113,8 @@ def init_vs_final_size_xy(dir, var_tab, var_name):
         file_final = load_file(f"{dir}/RUN_{var_name}_{iter}/data/density_final_crossection_x.dat")
         size_list_final.append(get_variance(file_final))
 
-    plt.plot(var_tab, size_list_init, '.-', color='red', lw=0.8, ms=5, label='initial')
-    plt.plot(var_tab, size_list_final, '.-', color='blue', lw=0.8, ms=5, label='final')
+    plt.plot(var_tab, (size_list_init), '.-', color='red', lw=0.8, ms=5, label='initial')
+    plt.plot(var_tab, (size_list_final), '.-', color='blue', lw=0.8, ms=5, label='final')
     # plt.plot(var_tab, size_list_init, '-o', lw=1.5, ms=5,
     #      color='tab:red', label='Initial')
 
@@ -125,10 +125,10 @@ def init_vs_final_size_xy(dir, var_tab, var_name):
     if var_name=='m1':
         plt.xlabel('$m_{eff}$')
     elif var_name=="n0_trapped":
-        plt.xlabel('$n_0$ ($10^{13}$ cm$^{-2}$)')
+        plt.xlabel('$n_0 trapped$ ($10^{13}$ cm$^{-2}$)')
     elif var_name=="sigma":
-            plt.xlabel('$\sigma$ (nm)')
-    plt.ylabel('size (nm)')
+            plt.xlabel('$\sigma_{init}$ (nm)')
+    plt.ylabel('$\sigma_{final}$ (nm)')
     plt.tight_layout()
     plots_dir = os.path.join(dir, "plots")
     os.makedirs(plots_dir, exist_ok=True)
